@@ -1,20 +1,27 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/flosch/pongo2"
+	_ "github.com/go-sql-driver/mysql" // Using MySQL driver
+	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
+
+var db *sqlx.DB
 
 const tmplPath = "src/template/"
 
 var e = createMux()
 
 func main() {
+	db = connectDB()
 	// `/` というパス（URL）と `articleIndex` という処理を結びつける
 	e.GET("/", articleIndex)
 
@@ -41,6 +48,19 @@ func createMux() *echo.Echo {
 
 	// アプリケーションインスタンスを返却
 	return e
+}
+
+func connectDB() *sqlx.DB {
+	dsn := os.Getenv("DSN")
+	db, err := sqlx.Open("mysql", dsn)
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+	if err := db.Ping(); err != nil {
+		e.Logger.Fatal(err)
+	}
+	log.Println("db connection succeeded")
+	return db
 }
 
 func articleIndex(c echo.Context) error {
