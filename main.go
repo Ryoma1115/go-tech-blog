@@ -30,7 +30,9 @@ func createMux() *echo.Echo {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Gzip())
 
+	// `src/css` ディレクトリ配下のファイルに `/css` のパスでアクセスできるようにする
 	e.Static("/css", "src/css")
+	e.Static("/js", "src/js")
 
 	// アプリケーションインスタンスを返却
 	return e
