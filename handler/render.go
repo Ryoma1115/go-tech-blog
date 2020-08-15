@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/flosch/pongo2"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 const tmplPath = "src/template/"
